@@ -19,7 +19,7 @@
 	padding:0;
 	min-height:$grid-unit - 30px;
 	// margin-right:240px;
-	margin-right:160px;
+	margin-right:80px;
 	.post-info{
 		padding:$grid-padding - 2px $grid-padding;
 		margin-left:30px;
@@ -194,7 +194,7 @@
 				color:$yellow;
 			}
 			&.discuss-link{
-				color:$green;
+				color:$blue-grey2;
 			}
 			&.more-link{
 				color:$blue;
@@ -202,6 +202,9 @@
 			&:hover{
 				background:$highlight-color url("/img/bg-header.png") top center;
 				color:white;
+				.action{
+					color:white;
+				}
 			}
 			&.voted{
 				background:$highlight-color;

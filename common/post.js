@@ -27,9 +27,9 @@ Meteor.methods({
       throw new Meteor.Error(603, 'This link has already been posted', postWithSameLink._id);
     }
 
-    // check that user waits more than 30 seconds between posts
-    if(!this.isSimulation && timeSinceLastPost < 30)
-      throw new Meteor.Error(604, 'Please wait '+(30-timeSinceLastPost)+' seconds before posting again');
+    // check that user waits more than 10 seconds between posts
+    if(!this.isSimulation && timeSinceLastPost < 10)
+      throw new Meteor.Error(604, 'Please wait '+(10-timeSinceLastPost)+' seconds before posting again');
 
     if(!this.isSimulation && numberOfPostsInPast24Hours > 30)
       throw new Meteor.Error(605, 'Sorry, you cannot submit more than 30 posts per day');

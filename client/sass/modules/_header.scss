@@ -8,14 +8,12 @@
 // 	}
 // }
 .header{
-	background:$highlight-color url("/img/bg-header.png") top center;
+	background:$highlight-color;
 	background-color:$highlight-color;
 	margin-bottom:$grid-margin;
 	height:$grid-unit;
 	position:relative;
 	@include cf;
-	@include border-radius(0 0 3px 3px);
-	@include box-shadow(0 1px 1px black(1));
 	.nav{
 		@include horizontal-list-container;
 		margin-top:20px;

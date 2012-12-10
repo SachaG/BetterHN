@@ -82,7 +82,7 @@ form, .accounts-dialog{
 input[type="submit"], button, .button, .btn{
 	-webkit-appearance: none;
 	@include border-radius(0px);
-	background:$red;
+	background:$button-color;
 	color:white;
 	text-align:center;
 	display:block;

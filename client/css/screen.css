@@ -112,7 +112,7 @@ html, body, .outer-wrapper {
 
 /* line 4, ../sass/partials/_main.scss */
 body {
-  background: #e0f1f7; }
+  background: #f6f6ef; }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
   /* line 9, ../sass/partials/_main.scss */
@@ -630,22 +630,14 @@ body.pageslide-open {
 
 /* line 10, ../sass/modules/_header.scss */
 .header {
-  background: #4e555d url("/img/bg-header.png") top center;
-  background-color: #4e555d;
+  background: #ff6600;
+  background-color: #ff6600;
   margin-bottom: 10px;
   height: 70px;
   position: relative;
   /* For modern browsers */
   /* For IE 6/7 (trigger hasLayout) */
-  *zoom: 1;
-  -webkit-border-radius: 0 0 3px 3px;
-  -moz-border-radius: 0 0 3px 3px;
-  -ms-border-radius: 0 0 3px 3px;
-  -o-border-radius: 0 0 3px 3px;
-  border-radius: 0 0 3px 3px;
-  -webkit-box-shadow: 0 1px 1px black;
-  -moz-box-shadow: 0 1px 1px black;
-  box-shadow: 0 1px 1px black; }
+  *zoom: 1; }
   /* line 3, ../sass/partials/_mixins.scss */
   .header:before, .header:after {
     content: "";
@@ -653,7 +645,7 @@ body.pageslide-open {
   /* line 7, ../sass/partials/_mixins.scss */
   .header:after {
     clear: both; }
-  /* line 19, ../sass/modules/_header.scss */
+  /* line 17, ../sass/modules/_header.scss */
   .header .nav {
     margin: 0;
     padding: 0;
@@ -661,7 +653,7 @@ body.pageslide-open {
     overflow: hidden;
     *zoom: 1;
     margin-top: 20px; }
-    /* line 22, ../sass/modules/_header.scss */
+    /* line 20, ../sass/modules/_header.scss */
     .header .nav li {
       list-style-image: none;
       list-style-type: none;
@@ -681,26 +673,26 @@ body.pageslide-open {
       /* line 50, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
       .header .nav li.last {
         padding-right: 0; }
-      /* line 25, ../sass/modules/_header.scss */
+      /* line 23, ../sass/modules/_header.scss */
       .header .nav li a {
         color: white;
         font-size: 16px;
         line-height: 26px;
         height: 26px;
         font-weight: normal; }
-        /* line 33, ../sass/modules/_header.scss */
+        /* line 31, ../sass/modules/_header.scss */
         .header .nav li a.intercom em:before {
           content: '('; }
-        /* line 36, ../sass/modules/_header.scss */
+        /* line 34, ../sass/modules/_header.scss */
         .header .nav li a.intercom em:after {
           content: ')'; }
-  /* line 43, ../sass/modules/_header.scss */
+  /* line 41, ../sass/modules/_header.scss */
   .header .site-nav {
     float: left;
     margin-left: 20px;
     position: relative;
     z-index: 20; }
-  /* line 49, ../sass/modules/_header.scss */
+  /* line 47, ../sass/modules/_header.scss */
   .header .logo {
     position: absolute;
     display: inline-block;
@@ -710,14 +702,14 @@ body.pageslide-open {
     color: white;
     font-size: 30px;
     z-index: 10; }
-    /* line 58, ../sass/modules/_header.scss */
+    /* line 56, ../sass/modules/_header.scss */
     .header .logo a, .header .logo a:visited {
       color: white; }
-    /* line 61, ../sass/modules/_header.scss */
+    /* line 59, ../sass/modules/_header.scss */
     .header .logo.image {
       position: absolute;
       left: 50%; }
-      /* line 64, ../sass/modules/_header.scss */
+      /* line 62, ../sass/modules/_header.scss */
       .header .logo.image a {
         display: block;
         height: 100%;
@@ -726,40 +718,40 @@ body.pageslide-open {
         font: 0/0 a;
         text-shadow: none;
         color: transparent; }
-  /* line 75, ../sass/modules/_header.scss */
+  /* line 73, ../sass/modules/_header.scss */
   .header .user-nav {
     float: right;
     margin-right: 10px;
     position: relative;
     z-index: 20; }
 
-/* line 97, ../sass/modules/_header.scss */
+/* line 95, ../sass/modules/_header.scss */
 .auth-buttons {
   position: relative;
   z-index: 20;
   float: right;
   margin: 20px 10px 0 0; }
-  /* line 102, ../sass/modules/_header.scss */
+  /* line 100, ../sass/modules/_header.scss */
   .auth-buttons #login-buttons {
     position: relative;
     line-height: 26px; }
-    /* line 108, ../sass/modules/_header.scss */
+    /* line 106, ../sass/modules/_header.scss */
     .auth-buttons #login-buttons .account-link {
       display: block;
       color: white !important;
       margin-bottom: 10px;
       float: none; }
-    /* line 114, ../sass/modules/_header.scss */
+    /* line 112, ../sass/modules/_header.scss */
     .auth-buttons #login-buttons a {
       text-decoration: none;
       color: #4a4444; }
-    /* line 118, ../sass/modules/_header.scss */
+    /* line 116, ../sass/modules/_header.scss */
     .auth-buttons #login-buttons a.login-link-text {
       color: #fff;
       font-weight: normal;
       display: inline-block;
       height: 26px; }
-    /* line 124, ../sass/modules/_header.scss */
+    /* line 122, ../sass/modules/_header.scss */
     .auth-buttons #login-buttons #login-buttons-password {
       float: none !important;
       text-shadow: none;
@@ -767,18 +759,18 @@ body.pageslide-open {
       line-height: 1.5;
       height: 26px;
       margin: 10px 0 !important; }
-    /* line 133, ../sass/modules/_header.scss */
+    /* line 131, ../sass/modules/_header.scss */
     .auth-buttons #login-buttons .login-header {
       font-family: inherit;
       height: 26px;
       margin-right: 10px;
       cursor: pointer;
       color: white; }
-      /* line 139, ../sass/modules/_header.scss */
+      /* line 137, ../sass/modules/_header.scss */
       .auth-buttons #login-buttons .login-header:before {
         color: rgba(255, 255, 255, 0.5);
         content: "Welcome, "; }
-    /* line 144, ../sass/modules/_header.scss */
+    /* line 142, ../sass/modules/_header.scss */
     .auth-buttons #login-buttons #login-buttons-logout {
       color: white;
       border: none;
@@ -880,7 +872,7 @@ body.pageslide-open {
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;
-        background: #4e555d url("/img/bg-header.png") top center; }
+        background: #ff6600 url("/img/bg-header.png") top center; }
         /* line 75, ../sass/modules/_posts.scss */
         .post-content .post-upvote .upvote-link.not-voted:hover i {
           color: white;
@@ -973,11 +965,11 @@ body.pageslide-open {
         color: #7ac0e4; }
       /* line 202, ../sass/modules/_posts.scss */
       .post-actions li a:hover {
-        background: #4e555d url("/img/bg-header.png") top center;
+        background: #ff6600 url("/img/bg-header.png") top center;
         color: white; }
       /* line 206, ../sass/modules/_posts.scss */
       .post-actions li a.voted {
-        background: #4e555d;
+        background: #ff6600;
         color: white;
         cursor: default; }
         /* line 210, ../sass/modules/_posts.scss */
@@ -1079,7 +1071,7 @@ body.pageslide-open {
   background: #fffce0; }
 /* line 305, ../sass/modules/_posts.scss */
 .post.sticky .post-actions li a:hover {
-  background: #4e555d url("/img/bg-header.png") top center; }
+  background: #ff6600 url("/img/bg-header.png") top center; }
 
 /* line 309, ../sass/modules/_posts.scss */
 .more-button {
@@ -1292,7 +1284,7 @@ body.pageslide-open {
       color: #f36c3d; }
     /* line 200, ../sass/modules/_comments.scss */
     .comment-actions a:hover {
-      background: #4e555d; }
+      background: #ff6600; }
       /* line 202, ../sass/modules/_comments.scss */
       .comment-actions a:hover i {
         color: white; }
@@ -1458,7 +1450,7 @@ input[type="submit"], button, .button, .auth-buttons #login-buttons #login-butto
   -ms-border-radius: 0px;
   -o-border-radius: 0px;
   border-radius: 0px;
-  background: #f36c3d;
+  background: #333333;
   color: white;
   text-align: center;
   display: block;

@@ -216,18 +216,18 @@ body, textarea, input, button, input[type="submit"], input[type="button"] {
   color: #4a4444;
   line-height: 1.6; }
 
-/* line 9, ../sass/partials/_typography.scss */
+/* line 8, ../sass/partials/_typography.scss */
 a {
   text-decoration: none;
   font-weight: bold; }
-  /* line 12, ../sass/partials/_typography.scss */
+  /* line 11, ../sass/partials/_typography.scss */
   a:link, a:visited, a:active {
     color: #a4a9ab; }
-  /* line 15, ../sass/partials/_typography.scss */
+  /* line 14, ../sass/partials/_typography.scss */
   a:hover {
     color: #f36c3d; }
 
-/* line 19, ../sass/partials/_typography.scss */
+/* line 18, ../sass/partials/_typography.scss */
 h3 {
   font-weight: bold;
   margin-bottom: 10px;

@@ -71,7 +71,7 @@
 
   // XXX: not sure if the '/' trailing routes are needed any more
   Meteor.Router.add({
-    '/': 'posts_top',
+    '/': 'posts_best',
     '/top':'posts_top',
     '/top/':'posts_top',
     '/top/:page':'posts_top',

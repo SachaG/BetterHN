@@ -1,9 +1,10 @@
 Template.posts_digest.helpers({
   posts: function(){
-    return postsForSub.digestPosts();
+    return currentDigestHandle().fetch();
   },
   hasPosts: function(){
-    return !!postsForSub.digestPosts().length;
+    var handle = currentDigestHandle()
+    return handle && ! handle.loading() && handle.loaded() > 0;
   },
   currentDate: function(){
     return moment(Session.get('currentDate')).format("dddd, MMMM Do YYYY");
@@ -30,12 +31,13 @@ Template.posts_digest.helpers({
 });
 
 Template.posts_digest.created = function(){
+  $(document).unbind('keyup'); //remove any potential existing bindings to avoid duplicates
   var currentDate=moment(Session.get('currentDate')).startOf('day');
   var today=moment(new Date()).startOf('day');
-  $(document).bind('keydown', 'left', function(){
+  $(document).bind('keyup', 'left', function(){
     Meteor.Router.to($('.prev-link').attr('href'));
   });
-  $(document).bind('keydown', 'right', function(){
+  $(document).bind('keyup', 'right', function(){
     if(isAdmin(Meteor.user()) || today.diff(currentDate, 'days') > 0)
       Meteor.Router.to($('.next-link').attr('href'));      
   });  

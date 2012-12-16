@@ -13,17 +13,6 @@ getSetting = function(setting){
   }
   return '';
 }
-trackEvent = function(event, properties){
-  console.log('trackevent: ', event, properties);
-  var properties= (typeof properties === 'undefined') ? {} : properties;
-  //TODO
-  // add event to an Events collection for logging and buffering purposes
-  if(Meteor.isClient){
-    if(typeof mixpanel.track != 'undefined'){
-      mixpanel.track(event, properties);
-    }
-  }
-}
 getAuthorName = function(item){
   // keep both variables for transition period
   var id=item.userId || item.user_id;
@@ -45,4 +34,10 @@ getDateRange= function(pageNumber){
   // console.log("after: ", dayToDisplay.startOf('day').format("dddd, MMMM Do YYYY, h:mm:ss a"));
   // console.log("before: ", dayToDisplay.endOf('day').format("dddd, MMMM Do YYYY, h:mm:ss a"));
   return range;
+}
+cleanUp = function(s){
+  return stripHTML(s);
+}
+stripHTML = function(s){
+  return s.replace(/<(?:.|\n)*?>/gm, '');
 }

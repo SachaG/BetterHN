@@ -1,39 +1,25 @@
-(function() {
-
-  // XXX: could we just work this out programmatically based on the name?
-  //   -- fix this along with the general problem of subscription mess
-  PAGE_SUBS = {
-    'posts_top': 'topPostsReady',
-    'posts_new': 'newPostsReady',
-    'posts_best': 'bestPostsReady',
-    'posts_pending': 'pendingPostsReady',
-    'posts_digest': 'digestPostsReady',
-    'post_page': 'singlePostReady',
-    'post_edit': 'singlePostReady',
-    'comment_page': 'commentReady',
-    'comment_reply': 'commentReady',
-    'comment_edit': 'commentReady'
-  }
-  
+(function() {  
   // specific router functions
-  digest = function(year, month, day){
+  digest = function(year, month, day, view){
+    var destination = (typeof view === 'undefined') ? 'posts_digest' : 'posts_digest_'+view
     if (typeof day === 'undefined') {
       // we can get into an infinite reactive loop with the subscription filter
       // if we keep setting the date even when it's barely changed
-      if (new Date() - Session.get('currentDate') > 60 * 1000) {
+      if (new Date() - new Date(Session.get('currentDate')) > 60 * 1000) {
         Session.set('currentDate', new Date());
       }
+      // Session.set('currentDate', new Date());
     } else {
       Session.set('currentDate', new Date(year, month-1, day));
     }
     
-    // a manual version of awaitSubscription; the sub can be loading
-    // with a new day, but the data is already there (as the subscription is 
-    // for three days)
-    if (postsForSub.digestPosts().length === 0 && Session.equals(PAGE_SUBS['post_digest'], false)) {
-      return 'loading'
+    // we need to make sure that the session changes above have been executed 
+    // before we can look at the digest handle. XXX: this might be a bad idea
+    Meteor.flush();
+    if (!currentDigestHandle() || currentDigestHandle().loading()) {
+      return 'loading';
     } else {
-      return 'posts_digest';
+      return destination;
     }
   };
 
@@ -42,7 +28,6 @@
     if(typeof commentId !== 'undefined')
       Session.set('scrollToCommentId', commentId); 
   
-    // XXX: should use the Session for these
     // on post page, we show the comment tree
     Session.set('showChildComments',true);
 
@@ -105,14 +90,14 @@
     '/submit':'post_submit',
     '/invite':'no_invite',
     '/posts/deleted':'post_deleted',
-    '/posts/:id/edit':post_edit,
-    '/posts/:id/comment/:comment_id':post,
-    '/posts/:id/':post,
-    '/posts/:id':post,
+    '/posts/:id/edit': post_edit,
+    '/posts/:id/comment/:comment_id': post,
+    '/posts/:id/': post,
+    '/posts/:id': post,
     '/comments/deleted':'comment_deleted',   
-    '/comments/:id':comment,
-    '/comments/:id/reply':comment_reply,
-    '/comments/:id/edit':comment_edit,
+    '/comments/:id': comment,
+    '/comments/:id/reply': comment_reply,
+    '/comments/:id/edit': comment_edit,
     '/settings':'settings',
     '/admin':'admin',
     '/categories':'categories',
@@ -120,9 +105,9 @@
     '/account':'user_edit',
     '/forgot_password':'user_password',
     '/users/:id': user_profile,
-    '/users/:id/edit':user_edit,
-    '/:year/:month/:day':digest,
-  });
+    '/users/:id/edit': user_edit,
+    '/:year/:month/:day': digest
+});
 
 
   Meteor.Router.filters({
@@ -189,10 +174,6 @@
       return isAdmin(Meteor.user()) ? page : "no_rights";
     },
 
-    awaitSubscription: function(page) {
-      return Session.equals(PAGE_SUBS[page], true) ? page : 'loading';
-    },
-  
     // if the user is logged in but their profile isn't filled out enough
     requireProfile: function(page) {
       var user = Meteor.user();
@@ -218,7 +199,6 @@
   });
   // 
   Meteor.Router.filter('requireProfile');
-  Meteor.Router.filter('awaitSubscription', {only: ['posts_top', 'posts_new', 'posts_pending', 'posts_best']});
   Meteor.Router.filter('requireLogin', {only: ['comment_reply','post_submit']});
   Meteor.Router.filter('canView', {only: ['posts_top', 'posts_new', 'posts_digest', 'posts_best']});
   Meteor.Router.filter('isLoggedOut', {only: ['user_signin', 'user_signup']});
@@ -231,32 +211,37 @@
     Meteor.autorun(function() {
       // grab the current page from the router, so this re-runs every time it changes
       Meteor.Router.page();
-      console.log('------ Request start --------');
-    
-      // openedComments is an Array that tracks which comments
-      // have been expanded by the user, to make sure they stay expanded
-      Session.set("openedComments", null);
-      Session.set('requestTimestamp',new Date());
 
-      // currentScroll stores the position of the user in the page
-      Session.set('currentScroll', null);
+      if(Meteor.Router.page() !== "loading"){
+        console.log('------ Request start -------- ('+Meteor.Router.page()+')');
       
-      document.title = getSetting("title");
-      
-      // $('body').css('min-height','0');
+        // openedComments is an Array that tracks which comments
+        // have been expanded by the user, to make sure they stay expanded
+        Session.set("openedComments", null);
+        Session.set('requestTimestamp',new Date());
 
-      // set all errors who have already been seen to not show anymore
-      clearSeenErrors();
-          
-      // log this request with mixpanel, etc
-      analyticsRequest();    
+        // currentScroll stores the position of the user in the page
+        Session.set('currentScroll', null);
+        
+        document.title = getSetting("title");
+        
+        $('body').css('min-height','0');
 
-      // if there are any pending events, log them too
-      if(eventBuffer=Session.get('eventBuffer')){
-        _.each(eventBuffer, function(e){
-          console.log('in buffer: ', e);
-          trackEvent(e.event, e.properties);
-        });
+        // set all errors who have already been seen to not show anymore
+        clearSeenErrors();
+            
+        // log this request with mixpanel, etc
+        analyticsRequest();
+        
+        // if there are any pending events, log them too
+        if(eventBuffer=Session.get('eventBuffer')){
+          _.each(eventBuffer, function(e){
+            console.log('in buffer: ', e);
+            trackEvent(e.event, e.properties);
+          });
+        }else{
+          console.log('------ Loading… --------');
+        }
       }
     });    
   });

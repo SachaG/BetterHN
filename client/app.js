@@ -1,3 +1,5 @@
+Session.set('initialLoad', true);
+
 // HELPERS
 getSetting = function(setting){
   var settings=Settings.find().fetch()[0];
@@ -22,7 +24,7 @@ Settings = new Meteor.Collection('settings');
 Meteor.subscribe('settings', function(){
 
   // runs once on site load
-
+  analyticsInit();
   Session.set('settingsLoaded',true);
 });
 
@@ -54,99 +56,78 @@ STATUS_PENDING=1;
 STATUS_APPROVED=2;
 STATUS_REJECTED=3;
 FIND_APPROVED={$or: [{status: {$exists : false}}, {status: STATUS_APPROVED}]};
-TOP_PAGE_PER_PAGE = 10;
-NEW_PAGE_PER_PAGE = 10;
-BEST_PAGE_PER_PAGE = 10;
-PENDING_PAGE_PER_PAGE = 10;
-DIGEST_PAGE_PER_PAGE = 5;
 
-// name <- the name of various session vars that will be set:
-//  - 'nameReady' <- is the subscription loading or ready?
-//  - 'nameLimit' <- how many of this type are we currently displaying?
-// options:
-//   - find <- how to find the items
-//   - sort <- how to sort them
-//   - perPage <- how many to display per-page
-//   - 
-postsForSub = {};
-setupPostSubscription = function(name, options) {
-  var readyName = name + 'Ready';
-  var limitName = name + 'Limit';
-  
-  if (options.perPage && ! Session.get(limitName))
-    Session.set(limitName, options.perPage);
-  
-  // setup the subscription
-  Meteor.autosubscribe(function() {
-    Session.set(readyName, false);
-
-    var findOptions = {
-      sort: options.sort,
-      limit: options.perPage && Session.get(limitName) 
-    };
-    
-    var find = _.isFunction(options.find) ? options.find() : options.find;
-    Meteor.subscribe('posts', find || {}, findOptions, name, function() {
-      Session.set(readyName, true);
-    });
-  });
-  
-  // setup a function to find the relevant posts (+deal with mm's lack of limit)
-  postsForSub[name] = function() {
-    var find = _.isFunction(options.find) ? options.find() : options.find;
-    var orderedPosts = Posts.find(find || {}, {sort: options.sort});
-    if (options.perPage) {
-      return limitDocuments(orderedPosts, Session.get(limitName));
-    } else {
-      return orderedPosts;
-    }
-  };
+var postListSubscription = function(find, options, per_page) {
+  var handle = paginatedSubscription(per_page, 'paginatedPosts', find, options);
+  handle.fetch = function() {
+    return limitDocuments(Posts.find(find, options), handle.loaded());
+  }
+  return handle;
 }
 
-// if(Session.get('selectedPostId')){
-  setupPostSubscription('singlePost', {
-    find: function() { return Session.get('selectedPostId'); }
+var topPostsHandle = postListSubscription(FIND_APPROVED, {sort: {score: -1}}, 10);
+var newPostsHandle = postListSubscription(FIND_APPROVED, {sort: {submitted: -1}}, 10);
+var bestPostsHandle = postListSubscription(FIND_APPROVED, {sort: {baseScore: -1}}, 10);
+var pendingPostsHandle = postListSubscription(
+  {$or: [{status: STATUS_PENDING}, {status: STATUS_REJECTED}]}, 
+  {sort: {score: -1}}, 
+  10
+);
+
+// digest subscriptions
+DIGEST_PRELOADING = 3;
+var digestHandles = {}
+var dateHash = function(mDate) {
+  return mDate.format('DD-MM-YYYY');
+}
+var currentMDateForDigest = function() {
+  return moment(Session.get('currentDate')).startOf('day');
+}
+var currentDigestHandle = function() {
+  return digestHandles[dateHash(currentMDateForDigest())];
+}
+
+// we use autorun here, because we DON'T want meteor to automatically
+// unsubscribe for us
+Meteor.autorun(function() {
+  var daySubscription = function(mDate) {
+    var find = _.extend({
+        submitted: {
+          $gte: mDate.startOf('day').valueOf(), 
+          $lt: mDate.endOf('day').valueOf()
+        }
+      }, FIND_APPROVED);
+    var options = {sort: {score: -1}};
+    
+    // we aren't ever going to paginate this sub, but we'll use pSub
+    // so we have a reactive loading() function 
+    // (grr... https://github.com/meteor/meteor/pull/273)
+    return postListSubscription(find, options, 5);
+  };
+  
+  // take it to the start of the day.
+  var mDate = currentMDateForDigest();
+  var firstDate = moment(mDate).subtract('days', DIGEST_PRELOADING);
+  var lastDate = moment(mDate).add('days', DIGEST_PRELOADING);
+  
+  // first unsubscribe all the subscriptions that fall outside of our current range
+  _.each(digestHandles, function(handle, hash) {
+    var mDate = moment(hash, 'DD-MM-YYYY');
+    if (mDate < firstDate || mDate > lastDate) {
+      // console.log('unsubscribing digest for ' + mDate.toString())
+      handle.stop();
+      delete digestHandles[dateHash(mDate)];
+    }
   });
-// }
-
-setupPostSubscription('topPosts', {
-  find: FIND_APPROVED,
-  sort: {score: -1},
-  perPage: TOP_PAGE_PER_PAGE
-});
-
-setupPostSubscription('newPosts', {
-  find: FIND_APPROVED,
-  sort: {submitted: -1},
-  perPage: NEW_PAGE_PER_PAGE
-});
-
-setupPostSubscription('bestPosts', {
-  find: FIND_APPROVED,
-  sort: {baseScore: -1},
-  perPage: NEW_PAGE_PER_PAGE
-});
-
-setupPostSubscription('pendingPosts', {
-  find: {$or: [{status: STATUS_PENDING}, {status: STATUS_REJECTED}]},
-  sort: {score: -1},
-  perPage: PENDING_PAGE_PER_PAGE
-});
-
-setupPostSubscription('digestPosts', {
-  find: function() {
-    var mDate = moment(Session.get('currentDate'));
-    var find = {
-      submitted: {
-        $gte: mDate.startOf('day').valueOf(), 
-        $lt: mDate.endOf('day').valueOf()
-      }
-    };
-    find=_.extend(find, FIND_APPROVED);
-    return find;
-  },
-  sort: {score: -1}
-  ,perPage: DIGEST_PAGE_PER_PAGE
+  
+  // set up a sub for each day for the DIGEST_PRELOADING days before and after
+  // but we want to be smart about it --  
+  for (mDate = firstDate; mDate < lastDate; mDate.add('days',1 )) {
+    if (! digestHandles[dateHash(mDate)] && mDate < moment().add('days', 1)) {
+      // console.log('subscribing digest for ' + mDate.toString());
+      digestHandles[dateHash(mDate)] = daySubscription(mDate);
+    }
+  }
 });
 
 // ** Categories **

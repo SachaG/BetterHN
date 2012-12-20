@@ -1,6 +1,6 @@
 <template name="post_item">
   <div class="post post-{{rank}} {{#if sticky}}sticky{{/if}}" id="{{_id}}">
-    <ul class="post-actions just-a-test">
+    <ul class="post-actions">
       <li class="post-discuss">
         <a class="discuss-link go-to-comments" href="/posts/{{_id}}">
           <i class="icon-comment"></i>
@@ -36,7 +36,7 @@
             | <a href="/posts/{{_id}}/edit" class="edit-link goto-edit">Edit</a>
           {{/if}}
           {{#if currentUser.isAdmin}}
-          | <span class="status" style="color:red;">{{status}}</span> votes: {{votes}}, baseScore: {{baseScore}}, score: {{short_score}}, time: {{timestamp}}
+            | status: {{status}}</span>, votes: {{votes}}, baseScore: {{baseScore}}, score: {{short_score}}
           {{/if}}
         </p>
       </div>

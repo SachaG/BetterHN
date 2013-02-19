@@ -69,6 +69,11 @@
     return 'user_edit';
   };
 
+  unsubscribe = function(hash){
+    Session.set('userEmailHash', hash);
+    return 'unsubscribe';
+  }
+
   // XXX: not sure if the '/' trailing routes are needed any more
   Meteor.Router.add({
     '/': 'posts_best',
@@ -84,7 +89,6 @@
     '/digest/:year/:month/:day': digest,
     '/digest': digest,
     '/digest/': digest,
-    '/test':'test',
     '/signin':'user_signin',
     '/signup':'user_signup',
     '/submit':'post_submit',
@@ -106,7 +110,8 @@
     '/forgot_password':'user_password',
     '/users/:id': user_profile,
     '/users/:id/edit': user_edit,
-    '/:year/:month/:day': digest
+    '/:year/:month/:day': digest,
+    '/unsubscribe/:hash': unsubscribe
 });
 
 
@@ -213,7 +218,7 @@
       Meteor.Router.page();
 
       if(Meteor.Router.page() !== "loading"){
-        console.log('------ Request start -------- ('+Meteor.Router.page()+')');
+        console.log('------ '+Meteor.Router.page()+' ------');
       
 
         if(_.contains(['posts_top', 'posts_new', 'posts_digest', 'posts_pending', 'posts_best'], Meteor.Router.page())){
@@ -247,7 +252,7 @@
             trackEvent(e.event, e.properties);
           });
         }else{
-          console.log('------ Loading… --------');
+          // console.log('------ Loading… --------');
         }
       }
     });    

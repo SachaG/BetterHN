@@ -5,11 +5,14 @@ Meteor.methods({
     var postUser=Meteor.users.findOne(post.userId);
     var timeSinceLastComment=timeSinceLast(user, Comments);
     var cleanText= cleanUp(text);
+    var commentInterval = Math.abs(parseInt(getSetting('commentInterval'))) || 15;
 
     var properties={
         'commentAuthorId': user._id,
         'commentAuthorName': getDisplayName(user),
+        'commentExcerpt': trimWords(stripMarkdown(cleanText),20),
         'postId': postId,
+        'postHeadline' : post.headline
     };
 
     // check that user can comment
@@ -17,8 +20,8 @@ Meteor.methods({
       throw new Meteor.Error('You need to login or be invited to post new comments.');
     
     // check that user waits more than 15 seconds between comments
-    if(!this.isSimulation && (timeSinceLastComment < 15))
-      throw new Meteor.Error(704, 'Please wait '+(15-timeSinceLastComment)+' seconds before commenting again');
+    if(!this.isSimulation && (timeSinceLastComment < commentInterval))
+      throw new Meteor.Error(704, 'Please wait '+(commentInterval-timeSinceLastComment)+' seconds before commenting again');
 
     var comment = {
         post: postId
@@ -36,7 +39,7 @@ Meteor.methods({
 
     Meteor.call('upvoteComment', newCommentId);
 
-    properties['commentId']=newCommentId;
+    properties.commentId = newCommentId;
 
     if(!this.isSimulation){
       if(parentCommentId){
@@ -44,18 +47,19 @@ Meteor.methods({
         var parentComment=Comments.find(parentCommentId);
         var parentUser=Meteor.users.find(parentComment.userId);
 
-        properties['parentCommentId']=parentCommentId;
-        properties['parentAuthorId']=parentComment.userId;
-        properties['parentAuthorName']=getDisplayName(parentUser);
+        properties.parentCommentId = parentCommentId;
+        properties.parentAuthorId = parentComment.userId;
+        properties.parentAuthorName = getDisplayName(parentUser);
 
-        notify('newReply', properties, parentUser, user);
+        createNotification('newReply', properties, parentUser, user);
+
         if(parentComment.userId!=post.userId){
           // if the original poster is different from the author of the parent comment, notify them too
-          notify('newComment', properties, postUser, Meteor.user());
+          createNotification('newComment', properties, postUser, Meteor.user());
         }
       }else{
         // root comment
-        notify('newComment', properties, postUser, Meteor.user());
+        createNotification('newComment', properties, postUser, Meteor.user());
       }
     }
     return properties;

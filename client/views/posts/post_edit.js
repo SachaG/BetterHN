@@ -5,17 +5,34 @@
 //    '[name]': function(node) { return node.getAttribute('name');}
 // });
 
+
 Template.post_edit.helpers({
   post: function(){
     return Posts.findOne(Session.get('selectedPostId'));
   },
-  categories: function(){
-    return Categories.find();
-  },
-  isChecked: function(){
+  created: function(){
     var post= Posts.findOne(Session.get('selectedPostId'));
-    return $.inArray( this.name, post.categories) != -1;
+    return moment(post.createdAt).format("MMMM Do, h:mm:ss a");
   },
+  categories: function(){
+    return Categories.find().fetch();
+  },
+  hasCategory: function(){
+    // console.log('hasCategory?')
+    var post= Posts.findOne(Session.get('selectedPostId'));
+    return _.contains(post.categories, this.name) ? 'checked' : '';
+  },
+  isApproved: function(){
+    return this.status == STATUS_APPROVED;
+  },
+  isSticky: function(){
+    return this.sticky ? 'checked' : '';
+  },
+  isSelected: function(){
+    // console.log('isSelected?')
+    var post= Posts.findOne(Session.get('selectedPostId'));
+    return post && this._id == post.userId ? 'selected' : '';
+  },  
   submittedDate: function(){
     return moment(this.submitted).format("MM/DD/YYYY");
   },
@@ -23,23 +40,19 @@ Template.post_edit.helpers({
     return moment(this.submitted).format("HH:mm");
   },
   users: function(){
-    return Meteor.users.find();
+    return Meteor.users.find().fetch();
   },
   userName: function(){
     return getDisplayName(this);
   },
-  isSelected: function(){
-    var post=Posts.findOne(Session.get('selectedPostId'));
-    return post && this._id == post.userId;
+  hasStatusPending: function(){
+    return this.status == STATUS_PENDING ? 'checked' : '';
   },
-  statusPending: function(){
-    return this.status == STATUS_PENDING;
+  hasStatusApproved: function(){
+    return this.status == STATUS_APPROVED ? 'checked' : '';
   },
-  statusApproved: function(){
-    return this.status == STATUS_APPROVED;
-  },
-  statusRejected: function(){
-    return this.status == STATUS_REJECTED;
+  hasStatusRejected: function(){
+    return this.status == STATUS_REJECTED ? 'checked' : '';
   },  
 });
 
@@ -64,7 +77,10 @@ Template.post_edit.events = {
     }
 
     var selectedPostId=Session.get('selectedPostId');
+    var post = Posts.findOne(selectedPostId);
     var categories = [];
+    var url = $('#url').val();
+    var status = parseInt($('input[name=status]:checked').val());
 
     $('input[name=category]:checked').each(function() {
        categories.push($(this).val());
@@ -72,17 +88,27 @@ Template.post_edit.events = {
     
     var properties = {
       headline:         $('#title').val(),
-      url:              $('#url').val(),
       body:             instance.editor.exportFile(),
       categories:       categories,
     };
     
+    if(url){
+      properties.url = (url.substring(0, 7) == "http://" || url.substring(0, 8) == "https://") ? url : "http://"+url;
+    }
+
     if(isAdmin(Meteor.user())){
+      if(status == STATUS_APPROVED){
+        if(post.submitted == ''){
+          // this is the first time we are approving the post
+          Meteor.call('post_approve', selectedPostId);
+        }else if($('#submitted_date').exists()){
+          properties.submitted = parseInt(moment($('#submitted_date').val()+$('#submitted_time').val(), "MM/DD/YYYY HH:mm").valueOf());
+        }
+      }
       adminProperties = {
-        submitted:  parseInt(moment($('#submitted_date').val()+$('#submitted_time').val(), "MM/DD/YYYY HH:mm").valueOf()),
         sticky:     !!$('#sticky').attr('checked'),
         userId:     $('#postUser').val(),
-        status:     parseInt($('input[name=status]:checked').val()),
+        status:     status,
       };
       properties = _.extend(properties, adminProperties);
     }

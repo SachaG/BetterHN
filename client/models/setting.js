@@ -6,10 +6,19 @@ var Setting = FormModel.extend({
     requirePostInvite: false,
     requirePostsApproval: false,
     scoreUpdateInterval: '',
+    postInterval: '',
+    commentInterval: '',
+    maxPostsPerDay: '',
     title: '',
     logoUrl: '',
     logoHeight: '',
     logoWidth: '',
+    defaultEmail: '',
+    newPostsNotifications: true,
+    backgroundColor: '',
+    secondaryColor: '',
+    buttonColor: '',
+    headerColor: '',
     mixpanelId: '',
     clickyId:'',
     goSquaredId: '',
@@ -19,7 +28,8 @@ var Setting = FormModel.extend({
   },      
 
   init: function(options) {
-    this._super(Settings, options);    
+    this._super(Settings, options);
+    this.overwriteTitle('scoreUpdateInterval', 'Scoring Frequency'); 
     this.overwriteTitle('requireViewInvite', 'Require Invite to view?');
     this.overwriteTitle('requirePostInvite', 'Require Invite to post?');
     this.overwriteTitle('requirePostsApproval', 'Posts must be approved by admin?');

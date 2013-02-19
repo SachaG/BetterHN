@@ -1,5 +1,6 @@
 {
   "meteor": {
+  	"branch": "release-0.5.7"
   },
   "packages": {
     "router": {},

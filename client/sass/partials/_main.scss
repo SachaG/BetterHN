@@ -53,3 +53,39 @@ body{
 #loading{
 	height:300px;
 }
+.meteor-book{
+	width:120px;
+	position:absolute;
+	top:15px;
+	right:15px;
+	text-align:center;
+	span{
+		font-size:11px;
+		display:block;
+		margin-bottom:7px;
+	}
+	.inner{
+		background:white;
+		padding:5px;
+		@include box-shadow(0px 1px 2px black(0.15));
+	}
+	a.book{
+		width:100px;
+		margin:0 auto;
+		display:block;
+		img{
+			display:block;
+			width:100%;
+		}
+	}
+	h4{
+		font-size:12px;
+	}
+	p{
+		font-size:12px;
+		a{
+			font-weight:normal;
+			color:$text;
+		}
+	}
+}

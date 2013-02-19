@@ -169,6 +169,45 @@ body {
 #loading {
   height: 300px; }
 
+/* line 56, ../sass/partials/_main.scss */
+.meteor-book {
+  width: 120px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  text-align: center; }
+  /* line 62, ../sass/partials/_main.scss */
+  .meteor-book span {
+    font-size: 11px;
+    display: block;
+    margin-bottom: 7px; }
+  /* line 67, ../sass/partials/_main.scss */
+  .meteor-book .inner {
+    background: white;
+    padding: 5px;
+    -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15); }
+  /* line 72, ../sass/partials/_main.scss */
+  .meteor-book a.book {
+    width: 100px;
+    margin: 0 auto;
+    display: block; }
+    /* line 76, ../sass/partials/_main.scss */
+    .meteor-book a.book img {
+      display: block;
+      width: 100%; }
+  /* line 81, ../sass/partials/_main.scss */
+  .meteor-book h4 {
+    font-size: 12px; }
+  /* line 84, ../sass/partials/_main.scss */
+  .meteor-book p {
+    font-size: 12px; }
+    /* line 86, ../sass/partials/_main.scss */
+    .meteor-book p a {
+      font-weight: normal;
+      color: #4a4444; }
+
 /* line 1, ../sass/partials/_typography.scss */
 body, textarea, input, button, input[type="submit"], input[type="button"] {
   font-family: "Open Sans", "Proxima Nova Soft", "proxima-nova-soft", "PT SANS", "Helvetica Neue", Helvetica, sans-serif;
@@ -629,9 +668,9 @@ body.pageslide-open {
 
 /* line 5, ../sass/partials/_grid.scss */
 .grid {
-  width: 74%;
-  margin-left: 13%;
-  margin-right: 13%;
+  width: 70%;
+  margin-left: 15%;
+  margin-right: 15%;
   -webkit-transition: ease-out margin 300ms;
   -webkit-transition-delay: 0ms;
   -moz-transition: ease-out margin 300ms 0ms;
@@ -1709,7 +1748,7 @@ table thead tr td {
   .mobile-nav-open .outer-wrapper .content-wrapper {
     left: 280px; }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 700px) {
   /* line 50, ../sass/partials/_mobile.scss */
   .header-button, .header .auth-buttons .login-link-and-dropdown-list .login-link-text, .header .mobile-button {
     position: relative;

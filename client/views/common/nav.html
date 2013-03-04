@@ -33,11 +33,13 @@
     </ul>
     
     {{#if logo_url}}
+      {{#constant}}
       <h1 class="logo image" style="height:{{logo_height}}px; width:{{logo_width}}px; top:{{logo_top}}px; margin-left:{{logo_offset}}px;">
         <a href="/">
           <img src="{{logo_url}}" style="height:{{logo_height}}px;" alt="{{site_title}}"/>
         </a>
       </h1>
+      {{/constant}}
     {{else}}
       <h1 class="logo"><a href="/">{{site_title}}</a></h1>
     {{/if}}

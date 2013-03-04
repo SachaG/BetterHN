@@ -171,39 +171,43 @@ body {
 
 /* line 56, ../sass/partials/_main.scss */
 .meteor-book {
+  display: none;
   width: 120px;
   position: absolute;
   top: 15px;
   right: 15px;
   text-align: center; }
-  /* line 62, ../sass/partials/_main.scss */
+  /* line 58, ../sass/partials/_main.scss */
+  .template-post_page .meteor-book {
+    display: block; }
+  /* line 66, ../sass/partials/_main.scss */
   .meteor-book span {
     font-size: 11px;
     display: block;
     margin-bottom: 7px; }
-  /* line 67, ../sass/partials/_main.scss */
+  /* line 71, ../sass/partials/_main.scss */
   .meteor-book .inner {
     background: white;
     padding: 5px;
     -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
     -moz-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15); }
-  /* line 72, ../sass/partials/_main.scss */
+  /* line 76, ../sass/partials/_main.scss */
   .meteor-book a.book {
     width: 100px;
     margin: 0 auto;
     display: block; }
-    /* line 76, ../sass/partials/_main.scss */
+    /* line 80, ../sass/partials/_main.scss */
     .meteor-book a.book img {
       display: block;
       width: 100%; }
-  /* line 81, ../sass/partials/_main.scss */
+  /* line 85, ../sass/partials/_main.scss */
   .meteor-book h4 {
     font-size: 12px; }
-  /* line 84, ../sass/partials/_main.scss */
+  /* line 88, ../sass/partials/_main.scss */
   .meteor-book p {
     font-size: 12px; }
-    /* line 86, ../sass/partials/_main.scss */
+    /* line 90, ../sass/partials/_main.scss */
     .meteor-book p a {
       font-weight: normal;
       color: #4a4444; }

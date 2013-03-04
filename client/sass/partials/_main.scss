@@ -54,6 +54,10 @@ body{
 	height:300px;
 }
 .meteor-book{
+	display:none;
+	.template-post_page &{
+		display:block;
+	}
 	width:120px;
 	position:absolute;
 	top:15px;

@@ -5,7 +5,6 @@
 //    '[name]': function(node) { return node.getAttribute('name');}
 // });
 
-
 Template.post_edit.helpers({
   post: function(){
     return Posts.findOne(Session.get('selectedPostId'));
@@ -15,12 +14,11 @@ Template.post_edit.helpers({
     return moment(post.createdAt).format("MMMM Do, h:mm:ss a");
   },
   categories: function(){
-    return Categories.find().fetch();
-  },
-  hasCategory: function(){
-    // console.log('hasCategory?')
-    var post= Posts.findOne(Session.get('selectedPostId'));
-    return _.contains(post.categories, this.name) ? 'checked' : '';
+    var post = this;
+    return Categories.find().map(function(category) {
+      category.checked = _.contains(post.categories, category.name) ? 'checked' : '';
+      return category;
+    });
   },
   isApproved: function(){
     return this.status == STATUS_APPROVED;
@@ -97,10 +95,12 @@ Template.post_edit.events = {
     }
 
     if(isAdmin(Meteor.user())){
+      console.log('status: '+status)
+      console.log(post)
       if(status == STATUS_APPROVED){
-        if(post.submitted == ''){
+        if(!post.submitted){
           // this is the first time we are approving the post
-          Meteor.call('post_approve', selectedPostId);
+          properties.submitted = new Date().getTime();
         }else if($('#submitted_date').exists()){
           properties.submitted = parseInt(moment($('#submitted_date').val()+$('#submitted_time').val(), "MM/DD/YYYY HH:mm").valueOf());
         }
@@ -111,6 +111,7 @@ Template.post_edit.events = {
         status:     status,
       };
       properties = _.extend(properties, adminProperties);
+      console.log(properties)
     }
 
     Posts.update(selectedPostId,
